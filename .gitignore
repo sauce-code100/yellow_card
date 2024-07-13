@@ -35,7 +35,6 @@ build/Release
 node_modules/
 
 # Environmental variables
-.env
 .env.dev
 .env.test
 .env.stage

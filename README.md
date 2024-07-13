@@ -226,3 +226,18 @@ This repo contains four tsconfig files.
 ## Badges
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+
+# How to Run the Application Locally Using Docker
+
+Ensure you are at the root of the repository
+Ensure you have Docker daemon running
+Then run the commands below:
+```bash 
+  docker build -t prismajs .
+```
+
+```bash 
+  docker run -p 3000:3000 prismajs
+```
+The application is now up and running on port 3000. 
+You can test this by entering localhost:3000 in your browser.
