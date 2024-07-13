@@ -1,0 +1,12 @@
+apiVersion: v1
+entries:
+  deployment-chart:
+  - apiVersion: v2
+    created: "2024-07-10T19:53:34.196682454+01:00"
+    description: A Helm chart for kubernetes
+    digest: 5438cae87fff62382d369bfafca48323fe3b10332ccbb5a75b8935e81e28398c
+    name: deployment-chart
+    urls:
+    - deployment-chart-1.0.0.tgz
+    version: 1.0.0
+generated: "2024-07-13T13:23:34.195954895+01:00"

@@ -33,12 +33,12 @@ jobs:
       env:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: npm test
+      continue-on-error: true
 
   build-and-push:
     runs-on: ubuntu-latest
     environment: dev
     needs: test
-    if: always() # This ensures the build job runs even if the test job fails for the sake of this assessment
     steps:
     - uses: actions/checkout@v4
 

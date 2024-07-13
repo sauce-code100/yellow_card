@@ -1,0 +1,28 @@
+{{- if and (hasKey .Values "ingress") (eq .Values.ingress.enabled true) }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.AppName }}-ing
+  namespace: 
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+    cert-manager.io/cluster-issuer: {{ .Values.cluster_issuer | default "letsencrypt-prod" }}
+    nginx.ingress.kubernetes.io/whitelist-source-range: {{ .Values.ingress.whitelist_cidr | default "0.0.0.0/0" }}
+spec:
+  ingressClassName: {{ .Values.ingress.className | default "nginx" }} 
+  tls:
+  - hosts:
+      - {{ .Values.ingress.host }}
+    secretName: {{ default (printf "%s-tls" .Values.AppName) .Values.ingress.secretName }}
+  rules:
+    - host: {{ .Values.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.AppName }}-service
+                port:
+                  number: {{ .Values.servicePort | default 80 }} 
+{{- end }}
