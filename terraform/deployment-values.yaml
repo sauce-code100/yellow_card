@@ -1,0 +1,15 @@
+AppName: test-app
+image:
+  repository: docker_image_url
+namespace: test
+containerPort: 3000
+resources:
+  requests:
+    cpu: 0.5
+    memory: 500Mi
+  limits:
+    cpu: 1
+    memory: 1Gi
+ingress:
+  enabled: true
+  host: app.example.com
