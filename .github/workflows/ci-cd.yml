@@ -7,6 +7,11 @@ on:
     branches: [ "develop" ]
   workflow_dispatch:
 
+env:
+  IMAGE_TAG: latest
+  ECR_REGISTRY: ${{ secrets.ECR_REGISTRY }}
+  ECR_REPOSITORY: ${{ secrets.ECR_REPOSITORY }}
+
 jobs:
   test:
     runs-on: ubuntu-latest
