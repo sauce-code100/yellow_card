@@ -29,3 +29,32 @@ jobs:
         DATABASE_URL: ${{ secrets.DATABASE_URL }}
       run: npm test
 
+  build-and-push:
+    runs-on: ubuntu-latest
+    environment: dev
+    needs: test
+    if: always() # This ensures the build job runs even if the test job fails for the sake of this assessment
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-publish
+      shell: bash
+      run: |
+        docker build . -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        echo "IMAGE $IMAGE_TAG is pushed to $ECR_REGISTRY/$ECR_REPOSITORY"
+        echo "image_tag=$IMAGE_TAG" 
+        echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
