@@ -63,3 +63,24 @@ jobs:
         echo "image_tag=$IMAGE_TAG" 
         echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
+
+  deploy:
+    runs-on: ubuntu-latest
+    environment: dev
+    needs: build-and-push
+    steps:
+
+    - uses: actions/checkout@v4
+      
+    - name: Set up Terraform
+      uses: hashicorp/setup-terraform@v3
+      with:
+        terraform_version: 1.8.0
+
+    - name: deploy to EKS
+      run: |
+        cd terraform
+        terraform init
+        terraform fmt
+        terraform plan
+        terraform apply -auto-approve
