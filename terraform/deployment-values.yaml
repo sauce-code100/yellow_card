@@ -1,7 +1,7 @@
 AppName: test-app
 image:
-  repository: docker_image_url
-namespace: test
+  repository: 740183721899.dkr.ecr.us-east-1.amazonaws.com
+namespace: dev
 containerPort: 3000
 resources:
   requests:

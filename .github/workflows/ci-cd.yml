@@ -54,14 +54,11 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build, tag, and push image to Amazon ECR
-      id: build-publish
       shell: bash
       run: |
         docker build . -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
         docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-        echo "IMAGE $IMAGE_TAG is pushed to $ECR_REGISTRY/$ECR_REPOSITORY"
-        echo "image_tag=$IMAGE_TAG" 
-        echo "full_image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+        sed -i 's|repository: .*$ECR_REGISTRY/.*|repository: $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG|' ./terraform/deployment-values.yaml
 
 
   deploy:
