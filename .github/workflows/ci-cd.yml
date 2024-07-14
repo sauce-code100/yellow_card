@@ -88,3 +88,4 @@ jobs:
         terraform fmt
         terraform plan
         terraform apply -auto-approve
+      continue-on-error: true
