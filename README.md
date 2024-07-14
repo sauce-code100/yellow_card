@@ -1,7 +1,7 @@
-# How to Run the Test Locally
+# How to Run Tests Locally
 
 Ensure you have NodeJs installed on your system
-The run the command:
+Then run the command:
 
 ```bash 
   npm run test
@@ -21,3 +21,16 @@ Then run the commands below:
 ```
 The application is now up and running on port 3000. 
 You can test this by entering localhost:3000 in your browser.
+
+# To Deploy the Application
+
+Ensure you have Terraform installed on your system.  
+Confirm you are at the root of the repository.  
+
+Then run:  
+```bash 
+    cd terraform
+    terraform init
+    terraform plan
+    terraform apply -auto-approve
+```
