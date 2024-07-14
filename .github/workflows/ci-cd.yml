@@ -35,10 +35,21 @@ jobs:
       run: npm test
       continue-on-error: true
 
-  build-and-push:
+  build:
     runs-on: ubuntu-latest
     environment: dev
     needs: test
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Build and tag image
+      shell: bash
+      run: docker build . -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
+  push:
+    runs-on: ubuntu-latest
+    environment: dev
+    needs: build
     steps:
     - uses: actions/checkout@v4
 
@@ -64,7 +75,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     environment: dev
-    needs: build-and-push
+    needs: push
     steps:
 
     - uses: actions/checkout@v4
