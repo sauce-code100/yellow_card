@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 if [ -d "migrate-test" ]; then
     rm -rf migrate-test
 fi
@@ -38,7 +37,7 @@ SOURCE_REPO_URL="https://github.com/yellowcardfinancial/yellowcard-transaction-a
 TEMP_REPO_URL="https://github.com/yellowcardfinancial/pod-migration.git"
 
 # Branch names
-EXTRACT_BRANCH="extract-$MIGRATING_SERVICE"  
+EXTRACT_BRANCH="extract-$MIGRATING_SERVICE" 
 MIGRATE_BRANCH="migrate-$MIGRATING_SERVICE"
 
 echo "Starting migration of '$SOURCE_FOLDER' to '$TARGET_FOLDER' in repository: $TARGET_REPO_URL..."
@@ -78,16 +77,32 @@ git checkout -b $MIGRATE_BRANCH
 # Step 8: Add the temporary repository as a remote and fetch the extracted branch
 echo "Adding temporary repository as remote and fetching branch '$EXTRACT_BRANCH'"
 git remote add temp-repo $TEMP_REPO_URL
-git fetch temp-repo $EXTRACT_BRANCH  ##########
+git fetch temp-repo $EXTRACT_BRANCH
 
-# Step 9: Merge the folder into the target repository
-echo "Merging folder into target path '$TARGET_FOLDER'"
-git checkout -b $MIGRATING_SERVICE-extract temp-repo/$EXTRACT_BRANCH
-git checkout $MIGRATE_BRANCH
-git read-tree --prefix=$TARGET_FOLDER/ -u $MIGRATING_SERVICE-extract
-git commit -m "Merged folder '$SOURCE_FOLDER' into '$TARGET_FOLDER' with history"
+# Step 9: Merge the folder into the target repository (with history)
+echo "Merging folder into target path '$TARGET_FOLDER' with history"
+git merge temp-repo/$EXTRACT_BRANCH --allow-unrelated-histories -m "Merge '$MIGRATING_SERVICE' service with history"
 
-# Step 10: Push the migration branch to the target repository
+# Step 10: Move files to target location
+echo "Moving files to target location '$TARGET_FOLDER/$MIGRATING_SERVICE'"
+# Create the target directory if it doesn't exist
+mkdir -p $TARGET_FOLDER
+
+# Move the files to the appropriate location
+if [ -d "$MIGRATING_SERVICE" ]; then
+    # Create the service directory if needed
+    mkdir -p "$TARGET_FOLDER/$MIGRATING_SERVICE"
+    # Move all content from extracted service to target location
+    mv $MIGRATING_SERVICE/* "$TARGET_FOLDER/$MIGRATING_SERVICE/"
+    # Remove the original directory
+    rm -rf $MIGRATING_SERVICE
+    # Add the moved files
+    git add "$TARGET_FOLDER/$MIGRATING_SERVICE"
+    # Commit the file movement
+    git commit -m "Relocate '$MIGRATING_SERVICE' to target path '$TARGET_FOLDER/$MIGRATING_SERVICE'"
+fi
+
+# Step 11: Push the migration branch to the target repository
 echo "Pushing migration branch '$MIGRATE_BRANCH' to the target repository"
 git push origin $MIGRATE_BRANCH
 
@@ -96,10 +111,9 @@ echo "Cleaning up temporary repository references"
 git remote remove temp-repo
 
 # Final message
-echo "Migration completed!" 
+echo "Migration completed!"
 echo "Your pod repo was cloned inside the migrate-test folder."
 echo "The folder '$SOURCE_FOLDER' has been migrated to '$TARGET_FOLDER' in the '$MIGRATE_BRANCH' branch of the target repository: $TARGET_REPO_URL."
-
-
+ 
 # Exit script
 exit 0
