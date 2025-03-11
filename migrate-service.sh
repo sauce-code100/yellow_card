@@ -81,7 +81,7 @@ git fetch temp-repo $EXTRACT_BRANCH
 
 # Step 9: Merge the folder into the target repository (with history)
 echo "Merging folder into target path '$TARGET_FOLDER' with history"
-git merge temp-repo/$EXTRACT_BRANCH --allow-unrelated-histories -m "Merge '$MIGRATING_SERVICE' service with history"
+git merge temp-repo/$EXTRACT_BRANCH --allow-unrelated-histories -m "chore: merge '$MIGRATING_SERVICE' service with history"
 
 # Step 10: Move files to target location
 echo "Moving files to target location '$TARGET_FOLDER/$MIGRATING_SERVICE'"
